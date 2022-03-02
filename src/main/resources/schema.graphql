@@ -1,0 +1,214 @@
+"""
+The query root of GraphQL interface.
+"""
+type Query {
+    """
+    The currently authenticated user.
+    """
+    viewer: User!
+}
+
+# common types region
+
+"""
+Possible directions in which to order a list of items when provided an
+`orderBy` argument.
+"""
+enum OrderDirection {
+    """
+    Specifies an ascending order for a given `orderBy` argument.
+    """
+    ASC
+
+    """
+    Specifies a descending order for a given `orderBy` argument.
+    """
+    DESC
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo {
+    """
+    When paginating forwards, the cursor to continue.
+    """
+    endCursor: String
+
+    """
+    When paginating forwards, are there more items?
+    """
+    hasNextPage: Boolean!
+
+    """
+    When paginating backwards, are there more items?
+    """
+    hasPreviousPage: Boolean!
+
+    """
+    When paginating backwards, the cursor to continue.
+    """
+    startCursor: String
+}
+
+# domain types region
+
+"""
+The user roles.
+"""
+enum UserRole {
+    STAFF
+    CUSTOMER
+}
+
+"""
+A user is an individual's account that has access to products and can make
+new content.
+"""
+type User {
+    id: ID!
+
+    """
+    The user's profile name.
+    """
+    name: String
+
+    """
+    The user's email address.
+    """
+    email: String
+
+    """
+    A list of user's roles.
+    """
+    roles: [UserRole]
+
+    # products(type: String): [Product]
+
+    """
+    A list of products the user has access to.
+    """
+    products(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the elements in the list that come before the specified cursor.
+        """
+        before: String
+
+        """
+        Returns the first N elements from the list.
+        """
+        first: Int
+
+        """
+        Returns the last N elements from the list.
+        """
+        last: Int
+
+        """
+        Filtering options for products.
+        """
+        filterBy: UserProductFilters = {}
+
+        """
+        Ordering options for products from the connection.
+        """
+        orderBy: UserProductOrder = {field: NAME, direction: ASC}
+    ): UserProductConnection!
+}
+
+"""
+The connection type for User Product.
+"""
+type UserProductConnection {
+    """
+    A list of edges.
+    """
+    edges: [UserProductEdge]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+User Product edge in a connection.
+"""
+type UserProductEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: Product!
+}
+
+"""
+Ways in which to filter user products.
+"""
+input UserProductFilters {
+    """
+    List user products by type.
+    """
+    type: String
+}
+
+"""
+Ordering options for User Products connections.
+"""
+input UserProductOrder {
+    """
+    The direction in which to order user products.
+    """
+    direction: OrderDirection = ASC
+
+    """
+    The field by which to order user products.
+    """
+    field: UserProductOrderField = NAME
+}
+
+"""
+Properties by which User Products connections can be ordered.
+"""
+enum UserProductOrderField {
+    """
+    Order user products list by name.
+    """
+    NAME
+}
+
+"""
+The product is a service offered to customers.
+"""
+type Product {
+    id: ID!
+
+    """
+    The product's type.
+    """
+    type: String
+
+    """
+    The descriptive name of product.
+    """
+    name: String
+
+    """
+    A list of users who has access to this product.
+    """
+    users: [User]
+}

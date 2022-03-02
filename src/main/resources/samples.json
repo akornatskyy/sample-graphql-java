@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": "1000",
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "roles": ["CUSTOMER"]
+    },
+    {
+      "id": "1005",
+      "name": "Richard Miles",
+      "email": "richard.miles@example.com",
+      "roles": ["STAFF"]
+    }
+  ],
+  "userProducts": {
+    "1000": [
+      "100",
+      "200",
+      "300"
+    ],
+    "1005": [
+      "100",
+      "300"
+    ]
+  },
+  "products": [
+    {
+      "id": "100",
+      "type": "X",
+      "name": "P1"
+    },
+    {
+      "id": "200",
+      "type": "Y",
+      "name": "P2"
+    },
+    {
+      "id": "300",
+      "type": "Y",
+      "name": "P3"
+    }
+  ]
+}
