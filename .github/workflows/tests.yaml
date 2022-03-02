@@ -5,7 +5,7 @@ on:
     - cron: "0 4 * * 0"  # At 04:00 on Sunday.
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
