@@ -14,6 +14,22 @@ quality criteria.
 mvn -T1C clean verify
 ```
 
+## Data Model
+
+![data model](./misc/docs/img/data-model.png)
+
+### Relational View
+
+![relational view](./misc/docs/img/relational-view.png)
+
+### Samples View
+
+![samples view](./misc/docs/img/samples-view.png)
+
+### GraphQL View
+
+![graphql view](./misc/docs/img/graphql-view.png)
+
 ## Tools
 
 - [GraphQL Playground](https://github.com/graphql/graphql-playground)
