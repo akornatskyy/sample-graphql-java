@@ -13,6 +13,13 @@ quality criteria.
 ```sh
 mvn -T1C clean verify
 ```
+## Run
+
+Run application as an executable jar.
+
+```sh
+java -jar target/sample-graphql-java-1.0-SNAPSHOT.jar
+```
 
 ## Data Model
 
