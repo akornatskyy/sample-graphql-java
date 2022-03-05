@@ -71,12 +71,12 @@ type User {
     """
     The user's profile name.
     """
-    name: String
+    name: String!
 
     """
     The user's email address.
     """
-    email: String
+    email: String!
 
     """
     A list of user's roles.
@@ -200,12 +200,17 @@ type Product {
     """
     The product's type.
     """
-    type: String
+    type: String!
 
     """
     The descriptive name of product.
     """
-    name: String
+    name: String!
+
+    """
+    Identifies the date and time when the object was last updated.
+    """
+    updateTime: String!
 
     """
     A list of users who has access to this product.
