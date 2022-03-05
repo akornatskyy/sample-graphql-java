@@ -5,8 +5,14 @@ import graphql.schema.idl.RuntimeWiring;
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
 public class GraphQLRuntimeWiring {
-  public static RuntimeWiring buildWiring(GraphQLDataFetchers fetchers) {
-    return RuntimeWiring.newRuntimeWiring()
+  private final GraphQLDataFetchers fetchers;
+
+  public GraphQLRuntimeWiring(GraphQLDataFetchers fetchers) {
+    this.fetchers = fetchers;
+  }
+
+  public void addTypeWiring(RuntimeWiring.Builder wiring) {
+    wiring
         .type(newTypeWiring("Query")
                   .dataFetcher("viewer", fetchers.getUser()))
         .type(newTypeWiring("User")
