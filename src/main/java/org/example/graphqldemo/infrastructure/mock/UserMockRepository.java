@@ -21,7 +21,7 @@ public class UserMockRepository implements UserRepository {
   private final Samples samples;
 
   public UserMockRepository(ObjectMapper objectMapper) {
-    try (InputStream is = GraphQLDataFetchers.class.getResourceAsStream(
+    try (InputStream is = UserMockRepository.class.getResourceAsStream(
         "/samples.json")) {
       samples = objectMapper.readValue(is, Samples.class);
     } catch (IOException ex) {
@@ -31,8 +31,10 @@ public class UserMockRepository implements UserRepository {
 
   public CompletableFuture<User> findUserById(String id) {
     return CompletableFuture.completedFuture(
-        samples.users.stream().filter(u -> u.id.equals(id))
-            .findFirst().get());
+        samples.users.stream()
+            .filter(u -> u.id.equals(id))
+            .findFirst()
+            .get());
   }
 
   public CompletableFuture<List<Product>> listUserProducts(ListUserProductsSpec spec) {
