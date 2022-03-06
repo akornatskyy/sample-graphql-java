@@ -8,6 +8,41 @@ type Query {
     viewer: User!
 }
 
+"""
+The root query for implementing GraphQL mutations.
+"""
+type Mutation {
+    """
+    Create a new product.
+    """
+    createProduct(
+        """
+        Parameters for create product.
+        """
+        input: CreateProductInput!
+    ): ProductPayload
+
+    """
+    Update a product.
+    """
+    updateProduct(
+        """
+        Parameters for update product.
+        """
+        input: UpdateProductInput!
+    ): ProductPayload
+
+    """
+    Delete a product and all of related items.
+    """
+    deleteProduct(
+        """
+        Parameters for delete product.
+        """
+        input: DeleteProductInput!
+    ): ProductPayload
+}
+
 # common types region
 
 """
@@ -84,6 +119,16 @@ type User {
     roles: [UserRole]
 
     # products(type: String): [Product]
+
+    """
+    Returns a single product by id.
+    """
+    product(
+        """
+        The id for the product to be returned.
+        """
+        id: String!
+    ): Product
 
     """
     A list of products the user has access to.
@@ -216,4 +261,74 @@ type Product {
     A list of users who has access to this product.
     """
     users: [User]
+}
+
+"""
+Input type of create product.
+"""
+input CreateProductInput {
+    """
+    A unique identifier for the client performing the mutation.
+    """
+    clientMutationId: String
+
+    """
+    The name of the new product.
+    """
+    name: String!
+
+    """
+    The product's type.
+    """
+    type: String!
+}
+
+"""
+Input type of update product.
+"""
+input UpdateProductInput {
+    """
+    A unique identifier for the client performing the mutation.
+    """
+    clientMutationId: String
+
+    """
+    The id of product to update
+    """
+    id: ID!
+
+    """
+    The new product name.
+    """
+    name: String
+}
+
+"""
+Input type of delete product.
+"""
+input DeleteProductInput {
+    """
+    A unique identifier for the client performing the mutation.
+    """
+    clientMutationId: String
+
+    """
+    The id of the product to delete.
+    """
+    id: ID!
+}
+
+"""
+Return type of create, update or delete product.
+"""
+type ProductPayload {
+    """
+    A unique identifier for the client performing the mutation.
+    """
+    clientMutationId: String
+
+    """
+    The product that was just deleted.
+    """
+    product: Product
 }

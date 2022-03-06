@@ -6,6 +6,7 @@ import graphql.schema.DataFetcher;
 import org.example.graphqldemo.core.Context;
 import org.example.graphqldemo.core.ListProductUsersSpec;
 import org.example.graphqldemo.core.Product;
+import org.example.graphqldemo.core.ProductPayload;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
 
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class GraphQLDataFetchers {
+  private static final String ID = "id";
+
   private final UserRepository repository;
 
   public GraphQLDataFetchers(UserRepository repository) {
@@ -22,7 +25,15 @@ public class GraphQLDataFetchers {
   public DataFetcher<CompletableFuture<User>> getUser() {
     return env -> {
       Context context = env.getLocalContext();
-      return repository.findUserById(context.userId);
+      return repository.getUser(context.userId);
+    };
+  }
+
+  public DataFetcher<CompletableFuture<Product>> getUserProduct() {
+    return env -> {
+      Context context = env.getLocalContext();
+      String productId = env.getArgument(ID);
+      return repository.getUserProduct(context.userId, productId);
     };
   }
 
@@ -32,17 +43,6 @@ public class GraphQLDataFetchers {
         .thenApply(products -> new SimpleListConnection<>(
             products, "user-products:").get(env));
   }
-
-  /*
-  public DataFetcher<CompletableFuture<List<Product>>> listUserProducts() {
-    return env -> {
-      Context context = env.getLocalContext();
-      ListUserProductsSpec spec = new ListUserProductsSpec();
-      spec.userId = context.userId;
-      spec.type = env.getArgument("type");
-      return repository.listUserProducts(spec);
-    };
-  }*/
 
   public DataFetcher<CompletableFuture<Long>> countUserProducts() {
     return env -> repository
@@ -56,5 +56,20 @@ public class GraphQLDataFetchers {
       spec.productId = product.id;
       return repository.listProductUsers(spec);
     };
+  }
+
+  public DataFetcher<CompletableFuture<ProductPayload>> createProduct() {
+    return env -> repository
+        .createProduct(GraphQLTranslator.createProductInput(env));
+  }
+
+  public DataFetcher<CompletableFuture<ProductPayload>> updateProduct() {
+    return env -> repository
+        .updateProduct(GraphQLTranslator.updateProductInput(env));
+  }
+
+  public DataFetcher<CompletableFuture<ProductPayload>> deleteProduct() {
+    return env -> repository
+        .deleteProduct(GraphQLTranslator.deleteProductInput(env));
   }
 }

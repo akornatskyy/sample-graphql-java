@@ -4,11 +4,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.schema.DataFetchingEnvironment;
 import org.example.graphqldemo.core.Context;
+import org.example.graphqldemo.core.CreateProductInput;
+import org.example.graphqldemo.core.DeleteProductInput;
 import org.example.graphqldemo.core.ListUserProductsSpec;
+import org.example.graphqldemo.core.UpdateProductInput;
 
 import java.util.Map;
 
 final class GraphQLTranslator {
+  private static final String INPUT = "input";
   private static final ObjectMapper MAPPER = new ObjectMapper()
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -26,6 +30,36 @@ final class GraphQLTranslator {
     return listUserProductsSpec(
         env.getLocalContext(),
         env.getExecutionStepInfo().getParent().getArguments());
+  }
+
+  static CreateProductInput createProductInput(
+      DataFetchingEnvironment env
+  ) {
+    CreateProductInput input = MAPPER.convertValue(
+        env.getArgument(INPUT), CreateProductInput.class);
+    Context context = env.getLocalContext();
+    input.userId = context.userId;
+    return input;
+  }
+
+  static UpdateProductInput updateProductInput(
+      DataFetchingEnvironment env
+  ) {
+    UpdateProductInput input = MAPPER.convertValue(
+        env.getArgument(INPUT), UpdateProductInput.class);
+    Context context = env.getLocalContext();
+    input.userId = context.userId;
+    return input;
+  }
+
+  static DeleteProductInput deleteProductInput(
+      DataFetchingEnvironment env
+  ) {
+    DeleteProductInput input = MAPPER.convertValue(
+        env.getArgument(INPUT), DeleteProductInput.class);
+    Context context = env.getLocalContext();
+    input.userId = context.userId;
+    return input;
   }
 
   private static ListUserProductsSpec listUserProductsSpec(

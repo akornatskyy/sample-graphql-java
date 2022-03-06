@@ -1,12 +1,15 @@
 package org.example.graphqldemo.infrastructure.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.graphqldemo.core.CreateProductInput;
+import org.example.graphqldemo.core.DeleteProductInput;
 import org.example.graphqldemo.core.ListProductUsersSpec;
 import org.example.graphqldemo.core.ListUserProductsSpec;
 import org.example.graphqldemo.core.Product;
+import org.example.graphqldemo.core.ProductPayload;
+import org.example.graphqldemo.core.UpdateProductInput;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
-import org.example.graphqldemo.infrastructure.graphql.GraphQLDataFetchers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +32,7 @@ public class UserMockRepository implements UserRepository {
     }
   }
 
-  public CompletableFuture<User> findUserById(String id) {
+  public CompletableFuture<User> getUser(String id) {
     return CompletableFuture.completedFuture(
         samples.users.stream()
             .filter(u -> u.id.equals(id))
@@ -37,22 +40,37 @@ public class UserMockRepository implements UserRepository {
             .get());
   }
 
-  public CompletableFuture<List<Product>> listUserProducts(ListUserProductsSpec spec) {
-    return CompletableFuture
-        .completedFuture(
-            filterUserProducts(spec)
-                .collect(Collectors.toList()));
+  @Override
+  public CompletableFuture<Product> getUserProduct(
+      String userId, String productId) {
+    if (!samples.userProducts.get(userId).contains(productId)) {
+      return CompletableFuture.completedFuture(null);
+    }
+
+    return CompletableFuture.completedFuture(
+        samples.products.stream()
+            .filter(p -> productId.equals(p.id))
+            .findFirst()
+            .get());
   }
 
-  public CompletableFuture<Long> countUserProducts(ListUserProductsSpec spec) {
-    return CompletableFuture
-        .completedFuture(
-            filterUserProducts(spec)
-                .count());
+  public CompletableFuture<List<Product>> listUserProducts(
+      ListUserProductsSpec spec) {
+    return CompletableFuture.completedFuture(
+        filterUserProducts(spec)
+            .collect(Collectors.toList()));
+  }
+
+  public CompletableFuture<Long> countUserProducts(
+      ListUserProductsSpec spec) {
+    return CompletableFuture.completedFuture(
+        filterUserProducts(spec)
+            .count());
   }
 
   @Override
-  public CompletableFuture<List<User>> listProductUsers(ListProductUsersSpec spec) {
+  public CompletableFuture<List<User>> listProductUsers(
+      ListProductUsersSpec spec) {
     return CompletableFuture.completedFuture(
         samples.userProducts.entrySet()
             .stream()
@@ -67,7 +85,52 @@ public class UserMockRepository implements UserRepository {
             .collect(Collectors.toList()));
   }
 
-  private Stream<Product> filterUserProducts(ListUserProductsSpec spec) {
+  @Override
+  public CompletableFuture<ProductPayload> createProduct(
+      CreateProductInput input) {
+    Product product = Product.from(input);
+    Integer id = samples.products.stream()
+                     .map(x -> Integer.parseInt(x.id))
+                     .max(Integer::compare).get() + 100;
+    product.id = id.toString();
+    samples.products.add(product);
+    samples.userProducts.get(input.userId).add(product.id);
+
+    return CompletableFuture.completedFuture(
+        new ProductPayload(input, product));
+  }
+
+  @Override
+  public CompletableFuture<ProductPayload> updateProduct(
+      UpdateProductInput input) {
+    Product product = samples.products.stream()
+        .filter(p -> input.id.equals(p.id))
+        .findFirst()
+        .get();
+    product.update(input);
+    return CompletableFuture.completedFuture(
+        new ProductPayload(input, product));
+  }
+
+  @Override
+  public CompletableFuture<ProductPayload> deleteProduct(
+      DeleteProductInput input) {
+    if (!samples.userProducts.get(input.userId).remove(input.id)) {
+      return CompletableFuture.completedFuture(
+          new ProductPayload(input));
+    }
+
+    Product product = samples.products.stream()
+        .filter(p -> input.id.equals(p.id))
+        .findFirst()
+        .get();
+    samples.products.remove(product);
+    return CompletableFuture.completedFuture(
+        new ProductPayload(input, product));
+  }
+
+  private Stream<Product> filterUserProducts(
+      ListUserProductsSpec spec) {
     String type = spec.filterBy.type;
     return samples.userProducts.get(spec.userId)
         .stream()
