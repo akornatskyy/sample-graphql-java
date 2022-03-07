@@ -51,8 +51,10 @@ public class GraphQLDataFetchers {
 
   public DataFetcher<CompletableFuture<List<User>>> listProductUsers() {
     return env -> {
+      Context context = env.getLocalContext();
       Product product = env.getSource();
       ListProductUsersSpec spec = new ListProductUsersSpec();
+      spec.userId = context.userId;
       spec.productId = product.id;
       return repository.listProductUsers(spec);
     };

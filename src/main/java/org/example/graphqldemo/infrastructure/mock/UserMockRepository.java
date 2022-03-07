@@ -71,13 +71,13 @@ public class UserMockRepository implements UserRepository {
   @Override
   public CompletableFuture<List<User>> listProductUsers(
       ListProductUsersSpec spec) {
-    return CompletableFuture.completedFuture(
-        samples.userProducts.entrySet()
+    return getUserProduct(spec.userId, spec.productId)
+        .thenApply((product) -> samples.userProducts.entrySet()
             .stream()
             .filter(e -> samples.userProducts
                 .getOrDefault(e.getKey(), Collections.emptyList())
                 .stream()
-                .anyMatch(up -> up.equals(spec.productId))
+                .anyMatch(up -> up.equals(product.id))
             )
             .flatMap(e -> samples.users
                 .stream()
@@ -117,7 +117,7 @@ public class UserMockRepository implements UserRepository {
       DeleteProductInput input) {
     if (!samples.userProducts.get(input.userId).remove(input.id)) {
       return CompletableFuture.completedFuture(
-          new ProductPayload(input));
+          new ProductPayload(input, null));
     }
 
     Product product = samples.products.stream()
