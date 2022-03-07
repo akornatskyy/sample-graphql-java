@@ -21,9 +21,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserMockRepository implements UserRepository {
-  private final Samples samples;
+  private final ObjectMapper objectMapper;
+  private Samples samples;
 
   public UserMockRepository(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+    reset();
+  }
+
+  public void reset() {
     try (InputStream is = UserMockRepository.class.getResourceAsStream(
         "/samples.json")) {
       samples = objectMapper.readValue(is, Samples.class);
@@ -37,21 +43,23 @@ public class UserMockRepository implements UserRepository {
         samples.users.stream()
             .filter(u -> u.id.equals(id))
             .findFirst()
-            .get());
+            .orElseThrow(() -> new IllegalStateException(
+                "User is not found.")));
   }
 
   @Override
   public CompletableFuture<Product> getUserProduct(
       String userId, String productId) {
     if (!samples.userProducts.get(userId).contains(productId)) {
-      return CompletableFuture.completedFuture(null);
+      throw new IllegalStateException("User product is not found.");
     }
 
     return CompletableFuture.completedFuture(
         samples.products.stream()
             .filter(p -> productId.equals(p.id))
             .findFirst()
-            .get());
+            .orElseThrow(() -> new IllegalStateException(
+                "Product is not found.")));
   }
 
   public CompletableFuture<List<Product>> listUserProducts(
@@ -89,13 +97,12 @@ public class UserMockRepository implements UserRepository {
   public CompletableFuture<ProductPayload> createProduct(
       CreateProductInput input) {
     Product product = Product.from(input);
-    Integer id = samples.products.stream()
-                     .map(x -> Integer.parseInt(x.id))
-                     .max(Integer::compare).get() + 100;
-    product.id = id.toString();
+    product.id = Integer.toString(
+        samples.products.stream()
+            .map(x -> Integer.parseInt(x.id))
+            .max(Integer::compare).orElse(0) + 100);
     samples.products.add(product);
     samples.userProducts.get(input.userId).add(product.id);
-
     return CompletableFuture.completedFuture(
         new ProductPayload(input, product));
   }
@@ -103,45 +110,41 @@ public class UserMockRepository implements UserRepository {
   @Override
   public CompletableFuture<ProductPayload> updateProduct(
       UpdateProductInput input) {
-    Product product = samples.products.stream()
-        .filter(p -> input.id.equals(p.id))
-        .findFirst()
-        .get();
-    product.update(input);
-    return CompletableFuture.completedFuture(
-        new ProductPayload(input, product));
+    return getUserProduct(input.userId, input.id)
+        .thenApply((product) -> {
+          product.update(input);
+          return new ProductPayload(input, product);
+        });
   }
 
   @Override
   public CompletableFuture<ProductPayload> deleteProduct(
       DeleteProductInput input) {
-    if (!samples.userProducts.get(input.userId).remove(input.id)) {
-      return CompletableFuture.completedFuture(
-          new ProductPayload(input, null));
-    }
+    return getUserProduct(input.userId, input.id)
+        .thenApply((product) -> {
+          samples.products.remove(product);
+          return new ProductPayload(input, product);
+        });
+  }
 
-    Product product = samples.products.stream()
-        .filter(p -> input.id.equals(p.id))
-        .findFirst()
-        .get();
-    samples.products.remove(product);
-    return CompletableFuture.completedFuture(
-        new ProductPayload(input, product));
+  private List<String> userProducts(String userId) {
+    return samples.userProducts.get(userId);
   }
 
   private Stream<Product> filterUserProducts(
       ListUserProductsSpec spec) {
     String type = spec.filterBy.type;
-    return samples.userProducts.get(spec.userId)
+    return userProducts(spec.userId)
         .stream()
         .flatMap(productId -> samples.products.stream()
             .filter(p -> p.id.equals(productId)
                          && (type == null || type.equals(p.type))));
   }
+
+  private static class Samples {
+    public List<User> users;
+    public Map<String, List<String>> userProducts;
+    public List<Product> products;
+  }
 }
 
-class Samples {
-  public List<User> users;
-  public Map<String, List<String>> userProducts;
-  public List<Product> products;
-}
