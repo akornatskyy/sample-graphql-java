@@ -4,7 +4,9 @@ import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import org.example.graphqldemo.core.Context;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -30,9 +32,15 @@ public class GraphQLController {
       value = "/graphql",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @CrossOrigin
-  public CompletableFuture<Map<String, Object>> graphql(
+  public CompletableFuture<ResponseEntity<?>> graphql(
       @RequestBody Map<String, Object> body,
-      @RequestHeader("x-user") String user) {
+      @RequestHeader(value = "x-user", required = false) String user) {
+    if (user == null) {
+      return CompletableFuture.completedFuture(
+          ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+              .build());
+    }
+
     String query = (String) body.getOrDefault("query", "");
     String operationName = (String) body.get("operationName");
     Map<String, Object> variables = (Map<String, Object>) body.get("variables");
@@ -50,6 +58,7 @@ public class GraphQLController {
                 .variables(variables)
                 .localContext(context)
                 .build())
-        .thenApply(ExecutionResult::toSpecification);
+        .thenApply(ExecutionResult::toSpecification)
+        .thenApply(s -> new ResponseEntity(s, HttpStatus.OK));
   }
 }

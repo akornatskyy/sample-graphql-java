@@ -56,7 +56,19 @@ public class GraphQLControllerTest extends AbstractTestNGSpringContextTests {
           .toArray(Object[][]::new);
     }
   }
-  
+
+  @Test
+  public void unauthorized() {
+    GraphQLRequest request = new GraphQLRequest();
+    request.query = "{viewer { name }}";
+
+    WebTestClient.ResponseSpec response = post(request)
+        .exchange();
+
+    response
+        .expectStatus().isUnauthorized();
+  }
+
   private WebTestClient.RequestHeadersSpec<?> post(GraphQLRequest request) {
     return webClient.post()
         .uri("/graphql")
