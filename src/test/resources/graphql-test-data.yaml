@@ -1,0 +1,490 @@
+---
+inputs:
+  - title: viewer is John
+    query: |-
+      { 
+        viewer { 
+          name
+        }
+      }
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "name": "John Doe"
+          }
+        }
+      }
+  - title: viewer is Richard
+    userId: '1005'
+    query: |-
+      { 
+        viewer { 
+          name
+        }
+      }
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "name": "Richard Miles"
+          }
+        }
+      }
+  - title: viewer with all attributes
+    query: |-
+      {
+        viewer {
+          id
+          name
+          email
+          roles
+        }
+      }
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "id": "1000",
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "roles": [
+              "CUSTOMER"
+            ]
+          }
+        }
+      }
+  - title: unknown user
+    userId: 'X'
+    query: |-
+      { 
+        viewer { 
+          name
+        }
+      }
+    result: |-
+      {
+        "errors": [
+          {
+            "message": "Exception while fetching data (/viewer) : User is not found.",
+            "locations": [
+              {
+                "line": 2,
+                "column": 3
+              }
+            ],
+            "path": [
+              "viewer"
+            ],
+            "extensions": {
+              "classification": "DataFetchingException"
+            }
+          }
+        ]
+      }
+  - title: get product by id
+    query: |-
+      query ($id: String!) {
+        viewer {
+          product(id: $id) {
+            id
+            name
+            type
+            updateTime
+          }
+        }
+      }
+    variables:
+      id: '100'
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "product": {
+              "id": "100",
+              "name": "P1",
+              "type": "X",
+              "updateTime": "2022-01-20T17:20:05Z"
+            }
+          }
+        }
+      }
+  - title: get non existing product
+    query: |-
+      {
+        viewer {
+          product(id: "X") {
+            id
+          }
+        }
+      }
+    result: |-
+      {
+        "errors": [
+          {
+            "message": "Exception while fetching data (/viewer/product) : User product is not found.",
+            "locations": [
+              {
+                "line": 3,
+                "column": 5
+              }
+            ],
+            "path": [
+              "viewer",
+              "product"
+            ],
+            "extensions": {
+              "classification": "DataFetchingException"
+            }
+          }
+        ],
+        "data": {
+          "viewer": {
+          }
+        }
+      }
+  - title: get product users
+    query: |-
+      query ($id: String!) {
+        viewer {
+          product(id: $id) {
+            users {
+              name
+            }
+          }
+        }
+      }
+    variables:
+      id: '100'
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "product": {
+              "users": [
+                {
+                  "name": "John Doe"
+                },
+                {
+                  "name": "Richard Miles"
+                }
+              ]
+            }
+          }
+        }
+      }
+  - title: get products total count
+    query: |-
+      {
+        viewer {
+          products {
+            totalCount
+          }
+        }
+      }
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "totalCount": 3
+            }
+          }
+        }
+      }
+  - title: get products page info
+    query: |-
+      query ($first: Int!) {
+        viewer {
+          products(first: $first) {
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+            }
+          }
+        }
+      }
+    variables:
+      first: 2
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "pageInfo": {
+                "endCursor": "dXNlci1wcm9kdWN0czox",
+                "hasNextPage": true,
+                "hasPreviousPage": false,
+                "startCursor": "dXNlci1wcm9kdWN0czow"
+              }
+            }
+          }
+        }
+      }
+  - title: get first 2 products
+    query: |-
+      query ($first: Int!) {
+        viewer {
+          products(first: $first) {
+            edges {
+              node {
+                name
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+      }
+    variables:
+      first: 2
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "edges": [
+                {
+                  "node": {
+                    "name": "P1"
+                  }
+                },
+                {
+                  "node": {
+                    "name": "P2"
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": true,
+                "endCursor": "dXNlci1wcm9kdWN0czox"
+              }
+            }
+          }
+        }
+      }
+  - title: get next 2 products
+    query: |-
+      query ($first: Int!, $after: String!) {
+        viewer {
+          products(first: $first, after: $after) {
+            edges {
+              node {
+                name
+              }
+            }
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              startCursor
+            }
+          }
+        }
+      }
+    variables:
+      first: 2
+      after: dXNlci1wcm9kdWN0czox
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "edges": [
+                {
+                  "node": {
+                    "name": "P3"
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": false,
+                "hasPreviousPage": true,
+                "startCursor": "dXNlci1wcm9kdWN0czoy"
+              }
+            }
+          }
+        }
+      }
+  - title: get previous 2 products
+    query: |-
+      query ($last: Int!, $before: String!) {
+        viewer {
+          products(last: $last, before: $before) {
+            edges {
+              node {
+                name
+              }
+            }
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              startCursor
+            }
+          }
+        }
+      }
+    variables:
+      last: 2
+      before: dXNlci1wcm9kdWN0czoy
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "edges": [
+                {
+                  "node": {
+                    "name": "P1"
+                  }
+                },
+                {
+                  "node": {
+                    "name": "P2"
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": true,
+                "hasPreviousPage": false,
+                "startCursor": "dXNlci1wcm9kdWN0czow"
+              }
+            }
+          }
+        }
+      }
+  - title: filter products by type
+    query: |-
+      query ($type: String!) {
+        viewer {
+          products(filterBy: { type: $type }) {
+            totalCount
+          }
+        }
+      }
+    variables:
+      type: X
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "totalCount": 1
+            }
+          }
+        }
+      }
+  - title: filter products by type not found
+    query: |-
+      query ($type: String!) {
+        viewer {
+          products(filterBy: { type: $type }) {
+            totalCount
+          }
+        }
+      }
+    variables:
+      type: 'unknown'
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "totalCount": 0
+            }
+          }
+        }
+      }
+
+  - title: create product
+    query: |-
+      mutation ($input: CreateProductInput!) {
+        createProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            name
+            type
+          }
+        }
+      }
+    variables:
+      input:
+        clientMutationId: dFHJMGDMuBF
+        name: ABC
+        type: X
+    result: |-
+      {
+        "data": {
+          "createProduct": {
+            "clientMutationId": "dFHJMGDMuBF",
+            "product": {
+              "id": "400",
+              "name": "ABC",
+              "type": "X"
+            }
+          }
+        }
+      }
+  - title: update product
+    query: |-
+      mutation ($input: UpdateProductInput!) {
+        updateProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            name
+          }
+        }
+      }
+    variables:
+      input:
+        clientMutationId: dFHJMGDMuBF
+        id: "100"
+        name: ABC
+    result: |-
+      {
+        "data": {
+          "updateProduct": {
+            "clientMutationId": "dFHJMGDMuBF",
+            "product": {
+              "id": "100",
+              "name": "ABC"
+            }
+          }
+        }
+      }
+  - title: delete product
+    query: |-
+      mutation ($input: DeleteProductInput!) {
+        deleteProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            name
+            type
+            updateTime
+          }
+        }
+      }
+    variables:
+      input:
+        clientMutationId: dFHJMGDMuBF
+        id: "100"
+    result: |-
+      {
+        "data": {
+          "deleteProduct": {
+            "clientMutationId": "dFHJMGDMuBF",
+            "product": {
+              "id": "100",
+              "name": "P1",
+              "type": "X",
+              "updateTime": "2022-01-20T17:20:05Z"
+            }
+          }
+        }
+      }
