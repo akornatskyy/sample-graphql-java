@@ -8,6 +8,7 @@ import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.example.graphqldemo.core.UserRepository;
 import org.example.graphqldemo.infrastructure.graphql.GraphQLDataFetchers;
+import org.example.graphqldemo.infrastructure.graphql.DataLoaderRegistryFactory;
 import org.example.graphqldemo.infrastructure.graphql.GraphQLRuntimeWiring;
 import org.example.graphqldemo.infrastructure.mock.UserMockRepository;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -51,6 +52,12 @@ class Config {
     new GraphQLRuntimeWiring(new GraphQLDataFetchers(repository))
         .addTypeWiring(builder);
     return builder.build();
+  }
+
+  @Bean
+  public DataLoaderRegistryFactory registryFactory(
+      UserRepository userRepository) {
+    return new DataLoaderRegistryFactory(userRepository);
   }
 
   @Bean

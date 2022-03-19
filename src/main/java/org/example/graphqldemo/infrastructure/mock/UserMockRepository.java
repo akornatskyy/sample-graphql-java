@@ -38,13 +38,14 @@ public class UserMockRepository implements UserRepository {
     }
   }
 
-  public CompletableFuture<User> getUser(String id) {
+  @Override
+  public CompletableFuture<List<User>> getUsers(List<String> ids) {
     return CompletableFuture.completedFuture(
-        samples.users.stream()
-            .filter(u -> u.id.equals(id))
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException(
-                "User is not found.")));
+        ids.stream()
+            .map(id -> samples.users.stream()
+                .filter(u -> id.equals(u.id))
+                .findFirst().orElse(null))
+            .collect(Collectors.toList()));
   }
 
   @Override
@@ -77,7 +78,7 @@ public class UserMockRepository implements UserRepository {
   }
 
   @Override
-  public CompletableFuture<List<User>> listProductUsers(
+  public CompletableFuture<List<String>> listProductUserIds(
       ListProductUsersSpec spec) {
     return getUserProduct(spec.userId, spec.productId)
         .thenApply((product) -> samples.userProducts.entrySet()
@@ -87,9 +88,7 @@ public class UserMockRepository implements UserRepository {
                 .stream()
                 .anyMatch(up -> up.equals(product.id))
             )
-            .flatMap(e -> samples.users
-                .stream()
-                .filter(u -> u.id.equals(e.getKey())))
+            .map(Map.Entry::getKey)
             .collect(Collectors.toList()));
   }
 

@@ -4,6 +4,7 @@ import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import org.example.graphqldemo.core.Context;
+import org.example.graphqldemo.infrastructure.graphql.DataLoaderRegistryFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,12 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 public class GraphQLController {
   private final GraphQL graphql;
+  private final DataLoaderRegistryFactory registryFactory;
 
-  public GraphQLController(GraphQL graphql) {
+  public GraphQLController(
+      GraphQL graphql, DataLoaderRegistryFactory registryFactory) {
     this.graphql = graphql;
+    this.registryFactory = registryFactory;
   }
 
   @SuppressWarnings("unchecked")
@@ -57,8 +61,9 @@ public class GraphQLController {
                 .operationName(operationName)
                 .variables(variables)
                 .localContext(context)
+                .dataLoaderRegistry(registryFactory.create())
                 .build())
         .thenApply(ExecutionResult::toSpecification)
-        .thenApply(s -> new ResponseEntity(s, HttpStatus.OK));
+        .thenApply(ResponseEntity::ok);
   }
 }

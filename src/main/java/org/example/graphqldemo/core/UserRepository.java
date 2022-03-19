@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface UserRepository {
-  CompletableFuture<User> getUser(String id);
+  CompletableFuture<List<User>> getUsers(List<String> ids);
 
   CompletableFuture<Product> getUserProduct(String userId, String productId);
 
@@ -12,7 +12,7 @@ public interface UserRepository {
 
   CompletableFuture<Long> countUserProducts(ListUserProductsSpec spec);
 
-  CompletableFuture<List<User>> listProductUsers(ListProductUsersSpec spec);
+  CompletableFuture<List<String>> listProductUserIds(ListProductUsersSpec spec);
 
   CompletableFuture<ProductPayload> createProduct(
       CreateProductInput input);
