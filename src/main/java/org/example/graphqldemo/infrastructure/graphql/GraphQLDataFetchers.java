@@ -1,9 +1,12 @@
 package org.example.graphqldemo.infrastructure.graphql;
 
+import graphql.GraphQLError;
+import graphql.execution.DataFetcherResult;
 import graphql.relay.Connection;
 import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.validation.rules.ValidationRules;
 import org.dataloader.DataLoader;
 import org.example.graphqldemo.core.Context;
 import org.example.graphqldemo.core.ListProductUsersSpec;
@@ -14,6 +17,7 @@ import org.example.graphqldemo.core.UserRepository;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class GraphQLDataFetchers {
   private static final String ID = "id";
@@ -72,14 +76,14 @@ public class GraphQLDataFetchers {
     };
   }
 
-  public DataFetcher<CompletableFuture<ProductPayload>> createProduct() {
-    return env -> repository
-        .createProduct(GraphQLTranslator.createProductInput(env));
+  public DataFetcher<CompletableFuture<?>> createProduct() {
+    return env -> guard(env, () -> repository
+        .createProduct(GraphQLTranslator.createProductInput(env)));
   }
 
-  public DataFetcher<CompletableFuture<ProductPayload>> updateProduct() {
-    return env -> repository
-        .updateProduct(GraphQLTranslator.updateProductInput(env));
+  public DataFetcher<CompletableFuture<?>> updateProduct() {
+    return env -> guard(env, () -> repository
+        .updateProduct(GraphQLTranslator.updateProductInput(env)));
   }
 
   public DataFetcher<CompletableFuture<ProductPayload>> deleteProduct() {
@@ -90,5 +94,20 @@ public class GraphQLDataFetchers {
   private static DataLoader<String, User> getUsersDataLoader(
       DataFetchingEnvironment env) {
     return env.getDataLoader(DataLoaderNames.USERS);
+  }
+
+  private static <T> CompletableFuture<?> guard(
+      DataFetchingEnvironment env, Supplier<CompletableFuture<T>> supplier) {
+    List<GraphQLError> errors = ValidationRules.newValidationRules()
+        .build()
+        .runValidationRules(env);
+    if (!errors.isEmpty()) {
+      return CompletableFuture.completedFuture(
+          DataFetcherResult.newResult()
+              .errors(errors)
+              .build());
+    }
+
+    return supplier.get();
   }
 }

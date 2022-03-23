@@ -1,3 +1,8 @@
+directive @Size(
+    min : Int = 0, max : Int = 2147483647,
+    message : String = "Required to be between {min} and {max} characters in length."
+) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
 """
 The query root of GraphQL interface.
 """
@@ -275,12 +280,12 @@ input CreateProductInput {
     """
     The name of the new product.
     """
-    name: String!
+    name: String! @Size(min: 2, max : 10)
 
     """
     The product's type.
     """
-    type: String!
+    type: String! @Size(min: 1, max : 4)
 }
 
 """
@@ -300,7 +305,7 @@ input UpdateProductInput {
     """
     The new product name.
     """
-    name: String
+    name: String @Size(min: 2, max : 10)
 }
 
 """

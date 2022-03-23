@@ -399,6 +399,75 @@ inputs:
         }
       }
 
+  - title: create product validation errors
+    query: |-
+      mutation ($input: CreateProductInput!) {
+        createProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            name
+            type
+          }
+        }
+      }
+    variables:
+      input:
+        name: ""
+        type: ""
+    result: |-
+      {
+        "errors": [
+          {
+            "message": "Required to be between 2 and 10 characters in length.",
+            "locations": [
+              {
+                "line": 2,
+                "column": 3
+              }
+            ],
+            "path": [
+              "createProduct"
+            ],
+            "extensions": {
+              "classification": {
+                "type": "ExtendedValidationError",
+                "validatedPath": [
+                  "createProduct",
+                  "input",
+                  "name"
+                ],
+                "constraint": "@Size"
+              }
+            }
+          },
+          {
+            "message": "Required to be between 1 and 4 characters in length.",
+            "locations": [
+              {
+                "line": 2,
+                "column": 3
+              }
+            ],
+            "path": [
+              "createProduct"
+            ],
+            "extensions": {
+              "classification": {
+                "type": "ExtendedValidationError",
+                "validatedPath": [
+                  "createProduct",
+                  "input",
+                  "type"
+                ],
+                "constraint": "@Size"
+              }
+            }
+          }
+        ],
+        "data": {}
+      }
+
   - title: create product
     query: |-
       mutation ($input: CreateProductInput!) {
@@ -429,6 +498,51 @@ inputs:
           }
         }
       }
+  - title: update product valiation errors
+    query: |-
+      mutation ($input: UpdateProductInput!) {
+        updateProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            name
+          }
+        }
+      }
+    variables:
+      input:
+        id: ""
+        name: ""
+    result: |-
+      {
+        "errors": [
+          {
+            "message": "Required to be between 2 and 10 characters in length.",
+            "locations": [
+              {
+                "line": 2,
+                "column": 3
+              }
+            ],
+            "path": [
+              "updateProduct"
+            ],
+            "extensions": {
+              "classification": {
+                "type": "ExtendedValidationError",
+                "validatedPath": [
+                  "updateProduct",
+                  "input",
+                  "name"
+                ],
+                "constraint": "@Size"
+              }
+            }
+          }
+        ],
+        "data": {}
+      }
+
   - title: update product
     query: |-
       mutation ($input: UpdateProductInput!) {

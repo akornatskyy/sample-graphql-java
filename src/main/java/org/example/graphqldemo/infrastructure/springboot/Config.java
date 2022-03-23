@@ -6,9 +6,12 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.validation.rules.OnValidationErrorStrategy;
+import graphql.validation.rules.ValidationRules;
+import graphql.validation.schemawiring.ValidationSchemaWiring;
 import org.example.graphqldemo.core.UserRepository;
-import org.example.graphqldemo.infrastructure.graphql.GraphQLDataFetchers;
 import org.example.graphqldemo.infrastructure.graphql.DataLoaderRegistryFactory;
+import org.example.graphqldemo.infrastructure.graphql.GraphQLDataFetchers;
 import org.example.graphqldemo.infrastructure.graphql.GraphQLRuntimeWiring;
 import org.example.graphqldemo.infrastructure.mock.UserMockRepository;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -51,6 +54,12 @@ class Config {
     RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
     new GraphQLRuntimeWiring(new GraphQLDataFetchers(repository))
         .addTypeWiring(builder);
+    builder.directiveWiring(
+        new ValidationSchemaWiring(
+            ValidationRules.newValidationRules()
+                .onValidationErrorStrategy(
+                    OnValidationErrorStrategy.RETURN_NULL)
+                .build()));
     return builder.build();
   }
 
