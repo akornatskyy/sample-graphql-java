@@ -15,7 +15,7 @@
     <graphql.version>18.0</graphql.version>
     <graphql.validation.version>17.0</graphql.validation.version>
     <jackson.version>2.13.2</jackson.version>
-    <spring.boot.version>2.6.4</spring.boot.version>
+    <spring.boot.version>2.6.6</spring.boot.version>
     <testng.version>7.5</testng.version>
   </properties>
 
