@@ -1,6 +1,14 @@
 package org.example.graphqldemo.infrastructure.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.example.graphqldemo.core.CreateProductInput;
 import org.example.graphqldemo.core.DeleteProductInput;
 import org.example.graphqldemo.core.ListProductUsersSpec;
@@ -11,15 +19,9 @@ import org.example.graphqldemo.core.UpdateProductInput;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+/**
+ * The type User mock repository.
+ */
 public class UserMockRepository implements UserRepository {
   private final ObjectMapper objectMapper;
   private Samples samples;
@@ -29,6 +31,9 @@ public class UserMockRepository implements UserRepository {
     reset();
   }
 
+  /**
+   * Reset samples.
+   */
   public void reset() {
     try (InputStream is = UserMockRepository.class.getResourceAsStream(
         "/samples.json")) {
@@ -63,6 +68,7 @@ public class UserMockRepository implements UserRepository {
                 "Product is not found.")));
   }
 
+  @Override
   public CompletableFuture<List<Product>> listUserProducts(
       ListUserProductsSpec spec) {
     return CompletableFuture.completedFuture(
@@ -70,6 +76,7 @@ public class UserMockRepository implements UserRepository {
             .collect(Collectors.toList()));
   }
 
+  @Override
   public CompletableFuture<Long> countUserProducts(
       ListUserProductsSpec spec) {
     return CompletableFuture.completedFuture(

@@ -3,12 +3,18 @@ package org.example.graphqldemo.core;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * The type Product.
+ */
 public final class Product {
   public String id;
   public String type;
   public String name;
   public Instant updateTime;
 
+  /**
+   * Create product from create product input.
+   */
   public static Product from(CreateProductInput input) {
     Product p = new Product();
     p.name = input.name;
@@ -17,6 +23,9 @@ public final class Product {
     return p;
   }
 
+  /**
+   * Update product from update product input.
+   */
   public void update(UpdateProductInput input) {
     if (input.name != null) {
       name = input.name;

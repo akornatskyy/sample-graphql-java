@@ -1,28 +1,33 @@
 package org.example.graphqldemo.infrastructure.graphql;
 
 import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.TypeRuntimeWiring;
 
-import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
+/**
+ * The type Graphql runtime wiring.
+ */
+public class GraphqlRuntimeWiring {
+  private final GraphqlDataFetchers fetchers;
 
-public class GraphQLRuntimeWiring {
-  private final GraphQLDataFetchers fetchers;
-
-  public GraphQLRuntimeWiring(GraphQLDataFetchers fetchers) {
+  public GraphqlRuntimeWiring(GraphqlDataFetchers fetchers) {
     this.fetchers = fetchers;
   }
 
+  /**
+   * Add type wiring.
+   */
   public void addTypeWiring(RuntimeWiring.Builder wiring) {
     wiring
-        .type(newTypeWiring("Query")
+        .type(TypeRuntimeWiring.newTypeWiring("Query")
                   .dataFetcher("viewer", fetchers.getUser()))
-        .type(newTypeWiring("User")
+        .type(TypeRuntimeWiring.newTypeWiring("User")
                   .dataFetcher("product", fetchers.getUserProduct())
                   .dataFetcher("products", fetchers.listUserProducts()))
-        .type(newTypeWiring("UserProductConnection")
+        .type(TypeRuntimeWiring.newTypeWiring("UserProductConnection")
                   .dataFetcher("totalCount", fetchers.countUserProducts()))
-        .type(newTypeWiring("Product")
+        .type(TypeRuntimeWiring.newTypeWiring("Product")
                   .dataFetcher("users", fetchers.listProductUsers()))
-        .type(newTypeWiring("Mutation")
+        .type(TypeRuntimeWiring.newTypeWiring("Mutation")
                   .dataFetcher("createProduct", fetchers.createProduct())
                   .dataFetcher("updateProduct", fetchers.updateProduct())
                   .dataFetcher("deleteProduct", fetchers.deleteProduct()))

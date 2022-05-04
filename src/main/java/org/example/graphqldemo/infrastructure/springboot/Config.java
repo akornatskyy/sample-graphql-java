@@ -9,10 +9,12 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import graphql.validation.rules.OnValidationErrorStrategy;
 import graphql.validation.rules.ValidationRules;
 import graphql.validation.schemawiring.ValidationSchemaWiring;
+import java.io.IOException;
+import java.io.InputStream;
 import org.example.graphqldemo.core.UserRepository;
 import org.example.graphqldemo.infrastructure.graphql.DataLoaderRegistryFactory;
-import org.example.graphqldemo.infrastructure.graphql.GraphQLDataFetchers;
-import org.example.graphqldemo.infrastructure.graphql.GraphQLRuntimeWiring;
+import org.example.graphqldemo.infrastructure.graphql.GraphqlDataFetchers;
+import org.example.graphqldemo.infrastructure.graphql.GraphqlRuntimeWiring;
 import org.example.graphqldemo.infrastructure.mock.UserMockRepository;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -20,15 +22,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 @Configuration
 class Config {
   private static final String REPOSITORY_STRATEGY = "repository.strategy";
 
   @Bean
-  public GraphQL graphQL(
+  public GraphQL graphql(
       TypeDefinitionRegistry typeRegistry, RuntimeWiring runtimeWiring) {
     return GraphQL
         .newGraphQL(
@@ -52,7 +51,7 @@ class Config {
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public RuntimeWiring buildWiring(UserRepository repository) {
     RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
-    new GraphQLRuntimeWiring(new GraphQLDataFetchers(repository))
+    new GraphqlRuntimeWiring(new GraphqlDataFetchers(repository))
         .addTypeWiring(builder);
     builder.directiveWiring(
         new ValidationSchemaWiring(

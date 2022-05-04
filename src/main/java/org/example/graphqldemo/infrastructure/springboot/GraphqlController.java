@@ -3,6 +3,9 @@ package org.example.graphqldemo.infrastructure.springboot;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import org.example.graphqldemo.core.Context;
 import org.example.graphqldemo.infrastructure.graphql.DataLoaderRegistryFactory;
 import org.springframework.http.HttpStatus;
@@ -15,16 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
 @RestController
-public class GraphQLController {
+class GraphqlController {
   private final GraphQL graphql;
   private final DataLoaderRegistryFactory registryFactory;
 
-  public GraphQLController(
+  public GraphqlController(
       GraphQL graphql, DataLoaderRegistryFactory registryFactory) {
     this.graphql = graphql;
     this.registryFactory = registryFactory;
@@ -36,7 +35,7 @@ public class GraphQLController {
       value = "/graphql",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @CrossOrigin
-  public CompletableFuture<ResponseEntity<?>> graphql(
+  public CompletableFuture<ResponseEntity<?>> post(
       @RequestBody Map<String, Object> body,
       @RequestHeader(value = "x-user", required = false) String user) {
     if (user == null) {

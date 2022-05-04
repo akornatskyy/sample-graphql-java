@@ -7,6 +7,9 @@ import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.validation.rules.ValidationRules;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import org.dataloader.DataLoader;
 import org.example.graphqldemo.core.Context;
 import org.example.graphqldemo.core.ListProductUsersSpec;
@@ -15,19 +18,21 @@ import org.example.graphqldemo.core.ProductPayload;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
-
-public class GraphQLDataFetchers {
+/**
+ * The type Graphql data fetchers.
+ */
+public class GraphqlDataFetchers {
   private static final String ID = "id";
 
   private final UserRepository repository;
 
-  public GraphQLDataFetchers(UserRepository repository) {
+  public GraphqlDataFetchers(UserRepository repository) {
     this.repository = repository;
   }
 
+  /**
+   * Gets user.
+   */
   public DataFetcher<CompletableFuture<?>> getUser() {
     return env -> {
       Context context = env.getLocalContext();
@@ -43,6 +48,9 @@ public class GraphQLDataFetchers {
     };
   }
 
+  /**
+   * Gets user product.
+   */
   public DataFetcher<CompletableFuture<Product>> getUserProduct() {
     return env -> {
       Context context = env.getLocalContext();
@@ -51,18 +59,27 @@ public class GraphQLDataFetchers {
     };
   }
 
+  /**
+   * List user products data fetcher.
+   */
   public DataFetcher<CompletableFuture<Connection<Product>>> listUserProducts() {
     return env -> repository
-        .listUserProducts(GraphQLTranslator.listUserProductsSpec(env))
+        .listUserProducts(GraphqlTranslator.listUserProductsSpec(env))
         .thenApply(products -> new SimpleListConnection<>(
             products, "user-products:").get(env));
   }
 
+  /**
+   * Count user products data fetcher.
+   */
   public DataFetcher<CompletableFuture<Long>> countUserProducts() {
     return env -> repository
-        .countUserProducts(GraphQLTranslator.listUserProductsSpecForCount(env));
+        .countUserProducts(GraphqlTranslator.listUserProductsSpecForCount(env));
   }
 
+  /**
+   * List product users data fetcher.
+   */
   public DataFetcher<CompletableFuture<List<User>>> listProductUsers() {
     return env -> {
       Context context = env.getLocalContext();
@@ -76,19 +93,28 @@ public class GraphQLDataFetchers {
     };
   }
 
+  /**
+   * Create product data fetcher.
+   */
   public DataFetcher<CompletableFuture<?>> createProduct() {
     return env -> guard(env, () -> repository
-        .createProduct(GraphQLTranslator.createProductInput(env)));
+        .createProduct(GraphqlTranslator.createProductInput(env)));
   }
 
+  /**
+   * Update product data fetcher.
+   */
   public DataFetcher<CompletableFuture<?>> updateProduct() {
     return env -> guard(env, () -> repository
-        .updateProduct(GraphQLTranslator.updateProductInput(env)));
+        .updateProduct(GraphqlTranslator.updateProductInput(env)));
   }
 
+  /**
+   * Delete product data fetcher.
+   */
   public DataFetcher<CompletableFuture<ProductPayload>> deleteProduct() {
     return env -> repository
-        .deleteProduct(GraphQLTranslator.deleteProductInput(env));
+        .deleteProduct(GraphqlTranslator.deleteProductInput(env));
   }
 
   private static DataLoader<String, User> getUsersDataLoader(

@@ -13,9 +13,11 @@
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
 
-    <graphql.version>18.0</graphql.version>
+    <checkstyle.version>9.3</checkstyle.version>
     <graphql.validation.version>17.0</graphql.validation.version>
+    <graphql.version>18.0</graphql.version>
     <jackson.version>2.13.2</jackson.version>
+    <maven.checkstyle.plugin>3.1.2</maven.checkstyle.plugin>
     <spring.boot.version>2.6.7</spring.boot.version>
     <testng.version>7.5</testng.version>
   </properties>
@@ -71,6 +73,33 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven.checkstyle.plugin}</version>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+          <violationSeverity>warning</violationSeverity>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
+
 </project>

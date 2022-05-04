@@ -1,13 +1,15 @@
 package org.example.graphqldemo.infrastructure.graphql;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.dataloader.DataLoaderFactory;
 import org.dataloader.DataLoaderRegistry;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
+/**
+ * The type Data loader registry factory.
+ */
 public final class DataLoaderRegistryFactory {
   private final UserRepository userRepository;
 
@@ -15,6 +17,9 @@ public final class DataLoaderRegistryFactory {
     this.userRepository = userRepository;
   }
 
+  /**
+   * Create data loader registry.
+   */
   public DataLoaderRegistry create() {
     return new DataLoaderRegistry()
         .register(

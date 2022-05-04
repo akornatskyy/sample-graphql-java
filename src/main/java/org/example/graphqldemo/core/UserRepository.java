@@ -3,6 +3,9 @@ package org.example.graphqldemo.core;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The interface User repository.
+ */
 public interface UserRepository {
   CompletableFuture<List<User>> getUsers(List<String> ids);
 

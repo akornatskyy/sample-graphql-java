@@ -2,6 +2,10 @@ package org.example.graphqldemo.infrastructure.springboot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 import org.example.graphqldemo.core.UserRepository;
 import org.example.graphqldemo.infrastructure.mock.UserMockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +18,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GraphQLControllerTest extends AbstractTestNGSpringContextTests {
+public class GraphqlControllerTest extends AbstractTestNGSpringContextTests {
 
   @Autowired
   private UserRepository userRepository;
@@ -59,7 +58,7 @@ public class GraphQLControllerTest extends AbstractTestNGSpringContextTests {
 
   @Test
   public void unauthorized() {
-    GraphQLRequest request = new GraphQLRequest();
+    GraphqlRequest request = new GraphqlRequest();
     request.query = "{viewer { name }}";
 
     WebTestClient.ResponseSpec response = post(request)
@@ -69,14 +68,14 @@ public class GraphQLControllerTest extends AbstractTestNGSpringContextTests {
         .expectStatus().isUnauthorized();
   }
 
-  private WebTestClient.RequestHeadersSpec<?> post(GraphQLRequest request) {
+  private WebTestClient.RequestHeadersSpec<?> post(GraphqlRequest request) {
     return webClient.post()
         .uri("/graphql")
         .contentType(MediaType.APPLICATION_JSON)
-        .body(Mono.just(request), GraphQLRequest.class);
+        .body(Mono.just(request), GraphqlRequest.class);
   }
 
-  private static class GraphQLRequest {
+  private static class GraphqlRequest {
     public String query;
     public Map<String, Object> variables;
   }
@@ -92,8 +91,8 @@ public class GraphQLControllerTest extends AbstractTestNGSpringContextTests {
     public Map<String, Object> variables;
     public String result;
 
-    public GraphQLRequest toRequest() {
-      GraphQLRequest request = new GraphQLRequest();
+    public GraphqlRequest toRequest() {
+      GraphqlRequest request = new GraphqlRequest();
       request.query = query;
       request.variables = variables;
       return request;

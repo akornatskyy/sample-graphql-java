@@ -1,5 +1,8 @@
 package org.example.graphqldemo.core;
 
+/**
+ * The type Paging.
+ */
 public class Paging {
   public String after;
   public Integer first;
