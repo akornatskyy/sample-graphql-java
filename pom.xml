@@ -16,7 +16,7 @@
     <checkstyle.version>9.3</checkstyle.version>
     <graphql.validation.version>17.0</graphql.validation.version>
     <graphql.version>18.0</graphql.version>
-    <jackson.version>2.13.2</jackson.version>
+    <jackson.version>2.13.3</jackson.version>
     <maven.checkstyle.plugin>3.1.2</maven.checkstyle.plugin>
     <spring.boot.version>2.6.7</spring.boot.version>
     <testng.version>7.5</testng.version>
