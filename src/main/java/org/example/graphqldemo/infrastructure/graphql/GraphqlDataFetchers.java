@@ -124,16 +124,6 @@ public class GraphqlDataFetchers {
 
   private static <T> CompletableFuture<?> guard(
       DataFetchingEnvironment env, Supplier<CompletableFuture<T>> supplier) {
-    List<GraphQLError> errors = ValidationRules.newValidationRules()
-        .build()
-        .runValidationRules(env);
-    if (!errors.isEmpty()) {
-      return CompletableFuture.completedFuture(
-          DataFetcherResult.newResult()
-              .errors(errors)
-              .build());
-    }
-
     return supplier.get();
   }
 }
