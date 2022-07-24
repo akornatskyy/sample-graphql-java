@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.example.graphqldemo.core.CreateProductInput;
@@ -15,6 +16,8 @@ import org.example.graphqldemo.core.ListProductUsersSpec;
 import org.example.graphqldemo.core.ListUserProductsSpec;
 import org.example.graphqldemo.core.Product;
 import org.example.graphqldemo.core.ProductPayload;
+import org.example.graphqldemo.core.TextFilter;
+import org.example.graphqldemo.core.TextFilterCondition;
 import org.example.graphqldemo.core.UpdateProductInput;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
@@ -139,12 +142,14 @@ public class UserMockRepository implements UserRepository {
 
   private Stream<Product> filterUserProducts(
       ListUserProductsSpec spec) {
-    String type = spec.filterBy.type;
+    Predicate<String> type = PredicateBuilder.build(spec.filterBy.type);
+    Predicate<String> name = PredicateBuilder.build(spec.filterBy.name);
     return userProducts(spec.userId)
         .stream()
         .flatMap(productId -> samples.products.stream()
             .filter(p -> p.id.equals(productId)
-                         && (type == null || type.equals(p.type))));
+                         && type.test(p.type)
+                         && name.test(p.name)));
   }
 
   private static class Samples {

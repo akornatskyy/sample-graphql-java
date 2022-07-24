@@ -206,6 +206,16 @@ type UserProductEdge {
     node: Product!
 }
 
+enum TextFilterCondition {
+    CONTAINS,
+    EQUALS,
+}
+
+input TextFilter {
+    condition: TextFilterCondition!
+    value: String!
+}
+
 """
 Ways in which to filter user products.
 """
@@ -213,7 +223,12 @@ input UserProductFilters {
     """
     List user products by type.
     """
-    type: String
+    type: TextFilter
+
+    """
+    List use products by name.
+    """
+    name: TextFilter
 }
 
 """

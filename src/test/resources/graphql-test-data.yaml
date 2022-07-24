@@ -360,7 +360,7 @@ inputs:
     query: |-
       query ($type: String!) {
         viewer {
-          products(filterBy: { type: $type }) {
+          products(filterBy: { type: { condition: EQUALS, value: $type } }) {
             totalCount
           }
         }
@@ -381,7 +381,7 @@ inputs:
     query: |-
       query ($type: String!) {
         viewer {
-          products(filterBy: { type: $type }) {
+          products(filterBy: { type: { condition: EQUALS, value: $type } }) {
             totalCount
           }
         }
@@ -394,6 +394,27 @@ inputs:
           "viewer": {
             "products": {
               "totalCount": 0
+            }
+          }
+        }
+      }
+  - title: filter products by name contains
+    query: |-
+      query ($name: String!) {
+        viewer {
+          products(filterBy: { name: { condition: CONTAINS, value: $name } }) {
+            totalCount
+          }
+        }
+      }
+    variables:
+      name: 2
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "totalCount": 1
             }
           }
         }
