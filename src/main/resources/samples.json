@@ -29,18 +29,21 @@
       "id": "100",
       "type": "X",
       "name": "P1",
+      "year": 2014,
       "updateTime": "2022-01-20T17:20:05Z"
     },
     {
       "id": "200",
       "type": "Y",
       "name": "P2",
+      "year": 2017,
       "updateTime": "2022-01-22T16:03:10Z"
     },
     {
       "id": "300",
       "type": "Y",
       "name": "P3",
+      "year": 2022,
       "updateTime": "2022-03-05T10:51:47Z"
     }
   ]

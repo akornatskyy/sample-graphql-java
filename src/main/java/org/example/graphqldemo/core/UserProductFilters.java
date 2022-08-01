@@ -3,8 +3,10 @@ package org.example.graphqldemo.core;
 /**
  * The type User product filters.
  */
-public final class UserProductFilters {
-  public TextFilter type;
+public final class UserProductFilters
+    extends LogicalFilter<UserProductFilters> {
 
-  public TextFilter name;
+  public StringFilter type;
+  public StringFilter name;
+  public IntFilter year;
 }

@@ -10,6 +10,7 @@ public final class Product {
   public String id;
   public String type;
   public String name;
+  public int year;
   public Instant updateTime;
 
   /**
@@ -19,6 +20,7 @@ public final class Product {
     Product p = new Product();
     p.name = input.name;
     p.type = input.type;
+    p.year = input.year;
     p.updateTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
     return p;
   }

@@ -206,14 +206,27 @@ type UserProductEdge {
     node: Product!
 }
 
-enum TextFilterCondition {
-    CONTAINS,
-    EQUALS,
+"""
+Filter for Int values. Only one operator applies at a time.
+"""
+input IntFilter {
+    equals: Int
+    lt: Int
+    lte: Int
+    gt: Int
+    gte: Int
+    in: [Int!]
+    not: IntFilter
 }
 
-input TextFilter {
-    condition: TextFilterCondition!
-    value: String!
+"""
+Filter for String values. Only one operator applies at a time.
+"""
+input StringFilter {
+    equals: String
+    contains: String
+    in: [String!]
+    not: StringFilter
 }
 
 """
@@ -221,14 +234,29 @@ Ways in which to filter user products.
 """
 input UserProductFilters {
     """
-    List user products by type.
+    Logical 'AND' operator.
     """
-    type: TextFilter
+    and: [UserProductFilters!]
 
     """
-    List use products by name.
+    Logical 'OR' operator.
     """
-    name: TextFilter
+    or: [UserProductFilters!]
+
+    """
+    List user products by type.
+    """
+    type: StringFilter
+
+    """
+    List user products by name.
+    """
+    name: StringFilter
+
+    """
+    List user products by year.
+    """
+    year: IntFilter
 }
 
 """
@@ -271,6 +299,11 @@ type Product {
     The descriptive name of product.
     """
     name: String!
+
+    """
+    The year of launch.
+    """
+    year: Int!
 
     """
     Identifies the date and time when the object was last updated.

@@ -360,7 +360,7 @@ inputs:
     query: |-
       query ($type: String!) {
         viewer {
-          products(filterBy: { type: { condition: EQUALS, value: $type } }) {
+          products(filterBy: { type: { equals: $type } }) {
             totalCount
           }
         }
@@ -377,11 +377,40 @@ inputs:
           }
         }
       }
+  - title: filter products by year
+    query: |-
+      query ($from: Int!, $to: Int!) {
+        viewer {
+          products(
+            filterBy: {
+              and: [
+                { year: { gte: $from } },
+                { year: { lte: $to } }
+              ]
+            }
+          ) {
+            totalCount
+          }
+        }
+      }
+    variables:
+      from: 2016
+      to: 2018
+    result: |-
+      {
+        "data": {
+          "viewer": {
+            "products": {
+              "totalCount": 1
+            }
+          }
+        }
+      }
   - title: filter products by type not found
     query: |-
       query ($type: String!) {
         viewer {
-          products(filterBy: { type: { condition: EQUALS, value: $type } }) {
+          products(filterBy: { type: { equals: $type } }) {
             totalCount
           }
         }
@@ -402,7 +431,7 @@ inputs:
     query: |-
       query ($name: String!) {
         viewer {
-          products(filterBy: { name: { condition: CONTAINS, value: $name } }) {
+          products(filterBy: { name: { contains: $name } }) {
             totalCount
           }
         }

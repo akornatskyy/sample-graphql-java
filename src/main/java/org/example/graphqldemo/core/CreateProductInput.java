@@ -7,4 +7,5 @@ public class CreateProductInput extends ClientMutationInput {
   public String userId;
   public String name;
   public String type;
+  public int year;
 }

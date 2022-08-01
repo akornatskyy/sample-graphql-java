@@ -16,10 +16,9 @@ import org.example.graphqldemo.core.ListProductUsersSpec;
 import org.example.graphqldemo.core.ListUserProductsSpec;
 import org.example.graphqldemo.core.Product;
 import org.example.graphqldemo.core.ProductPayload;
-import org.example.graphqldemo.core.TextFilter;
-import org.example.graphqldemo.core.TextFilterCondition;
 import org.example.graphqldemo.core.UpdateProductInput;
 import org.example.graphqldemo.core.User;
+import org.example.graphqldemo.core.UserProductFilters;
 import org.example.graphqldemo.core.UserRepository;
 
 /**
@@ -142,14 +141,21 @@ public class UserMockRepository implements UserRepository {
 
   private Stream<Product> filterUserProducts(
       ListUserProductsSpec spec) {
-    Predicate<String> type = PredicateBuilder.build(spec.filterBy.type);
-    Predicate<String> name = PredicateBuilder.build(spec.filterBy.name);
+    Predicate<Product> predicate = PredicateBuilder.build(
+        spec.filterBy,
+        (filters) -> {
+          Predicate<String> type = PredicateBuilder.build(filters.type);
+          Predicate<String> name = PredicateBuilder.build(filters.name);
+          Predicate<Integer> year = PredicateBuilder.build(filters.year);
+          return (p) -> type.test(p.type)
+                        && name.test(p.name)
+                        && year.test(p.year);
+        });
     return userProducts(spec.userId)
         .stream()
         .flatMap(productId -> samples.products.stream()
             .filter(p -> p.id.equals(productId)
-                         && type.test(p.type)
-                         && name.test(p.name)));
+                         && predicate.test(p)));
   }
 
   private static class Samples {
