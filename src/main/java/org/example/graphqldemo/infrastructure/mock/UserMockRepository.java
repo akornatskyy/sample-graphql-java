@@ -18,7 +18,6 @@ import org.example.graphqldemo.core.Product;
 import org.example.graphqldemo.core.ProductPayload;
 import org.example.graphqldemo.core.UpdateProductInput;
 import org.example.graphqldemo.core.User;
-import org.example.graphqldemo.core.UserProductFilters;
 import org.example.graphqldemo.core.UserRepository;
 
 /**
@@ -90,14 +89,13 @@ public class UserMockRepository implements UserRepository {
   public CompletableFuture<List<String>> listProductUserIds(
       ListProductUsersSpec spec) {
     return getUserProduct(spec.userId, spec.productId)
-        .thenApply((product) -> samples.userProducts.entrySet()
+        .thenApply((product) -> samples.userProducts.keySet()
             .stream()
-            .filter(e -> samples.userProducts
-                .getOrDefault(e.getKey(), Collections.emptyList())
+            .filter(key -> samples.userProducts
+                .getOrDefault(key, Collections.emptyList())
                 .stream()
                 .anyMatch(up -> up.equals(product.id))
             )
-            .map(Map.Entry::getKey)
             .collect(Collectors.toList()));
   }
 
@@ -139,8 +137,7 @@ public class UserMockRepository implements UserRepository {
     return samples.userProducts.get(userId);
   }
 
-  private Stream<Product> filterUserProducts(
-      ListUserProductsSpec spec) {
+  private Stream<Product> filterUserProducts(ListUserProductsSpec spec) {
     Predicate<Product> predicate = PredicateBuilder.build(
         spec.filterBy,
         (filters) -> {
