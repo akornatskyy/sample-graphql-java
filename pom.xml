@@ -13,7 +13,7 @@
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
 
-    <checkstyle.version>9.3</checkstyle.version>
+    <checkstyle.version>10.3.2</checkstyle.version>
     <graphql.validation.version>18.1</graphql.validation.version>
     <graphql.version>19.0</graphql.version>
     <jackson.version>2.13.3</jackson.version>
