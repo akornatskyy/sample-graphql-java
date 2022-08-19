@@ -18,7 +18,7 @@
     <graphql.version>19.0</graphql.version>
     <jackson.version>2.13.3</jackson.version>
     <maven.checkstyle.plugin>3.1.2</maven.checkstyle.plugin>
-    <spring.boot.version>2.7.2</spring.boot.version>
+    <spring.boot.version>2.7.3</spring.boot.version>
     <testng.version>7.5</testng.version>
   </properties>
 
