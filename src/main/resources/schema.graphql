@@ -224,6 +224,7 @@ Filter for String values. Only one operator applies at a time.
 """
 input StringFilter {
     equals: String
+    equalsIgnoreCase: String
     contains: String
     in: [String!]
     not: StringFilter

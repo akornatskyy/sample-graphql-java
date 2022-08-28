@@ -35,13 +35,21 @@ final class PredicateBuilder {
   private static final List<Function<StringFilter, Predicate<String>>>
       STRING_FILTER_BUILDERS = Arrays.asList(
       (f) -> f == null ? (v) -> true : null,
-      (f) -> f.equals != null ? f.equals::equalsIgnoreCase : null,
+      (f) -> f.equals != null ? f.equals::equals : null,
+      (f) -> f.equalsIgnoreCase != null
+             ? f.equalsIgnoreCase::equalsIgnoreCase
+             : null,
       (f) -> f.contains != null
              ? new TextFilterContainsIgnoreCase(f.contains)
              : null,
-      (f) -> f.in != null
-             ? (v) -> Arrays.stream(f.in).anyMatch(v::equalsIgnoreCase)
-             : null,
+      (f) -> {
+        if (f.in == null) {
+          return null;
+        }
+
+        List<String> in = Arrays.asList(f.in);
+        return in::contains;
+      },
       (f) -> {
         if (f.not == null) {
           return null;
