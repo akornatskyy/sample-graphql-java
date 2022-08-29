@@ -3,6 +3,7 @@ package org.example.graphqldemo.infrastructure.mock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.example.graphqldemo.core.AddUsersToProductInput;
 import org.example.graphqldemo.core.CreateProductInput;
 import org.example.graphqldemo.core.DeleteProductInput;
 import org.example.graphqldemo.core.ListProductUsersSpec;
@@ -129,6 +131,22 @@ public class UserMockRepository implements UserRepository {
     return getUserProduct(input.userId, input.id)
         .thenApply((product) -> {
           samples.products.remove(product);
+          return new ProductPayload(input, product);
+        });
+  }
+
+  @Override
+  public CompletableFuture<ProductPayload> addUsersToProduct(
+      AddUsersToProductInput input) {
+    return getUserProduct(input.userId, input.productId)
+        .thenApply((product) -> {
+          Stream.of(input.userIds).forEach(userId -> {
+            List<String> products = samples.userProducts.computeIfAbsent(
+                userId, (key) -> new ArrayList<>());
+            if (!products.contains(product.id)) {
+              products.add(product.id);
+            }
+          });
           return new ProductPayload(input, product);
         });
   }

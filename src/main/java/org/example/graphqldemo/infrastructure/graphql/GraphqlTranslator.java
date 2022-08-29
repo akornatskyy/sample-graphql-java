@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.Map;
+import org.example.graphqldemo.core.AddUsersToProductInput;
 import org.example.graphqldemo.core.Context;
 import org.example.graphqldemo.core.CreateProductInput;
 import org.example.graphqldemo.core.DeleteProductInput;
@@ -61,6 +62,15 @@ final class GraphqlTranslator {
       DataFetchingEnvironment env) {
     DeleteProductInput input = MAPPER.convertValue(
         env.getArgument(INPUT), DeleteProductInput.class);
+    Context context = env.getLocalContext();
+    input.userId = context.userId;
+    return input;
+  }
+
+  static AddUsersToProductInput addUsersToProductInput(
+      DataFetchingEnvironment env) {
+    AddUsersToProductInput input = MAPPER.convertValue(
+        env.getArgument(INPUT), AddUsersToProductInput.class);
     Context context = env.getLocalContext();
     input.userId = context.userId;
     return input;

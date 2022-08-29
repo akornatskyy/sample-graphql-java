@@ -46,6 +46,16 @@ type Mutation {
         """
         input: DeleteProductInput!
     ): ProductPayload
+
+    """
+    Add users to product.
+    """
+    addUsersToProduct(
+        """
+        Parameters for add users to product.
+        """
+        input: AddUsersToProductInput!
+    ): ProductPayload
 }
 
 # common types region
@@ -370,6 +380,26 @@ input DeleteProductInput {
     The id of the product to delete.
     """
     id: ID!
+}
+
+"""
+Input type of add users to product.
+"""
+input AddUsersToProductInput {
+    """
+    A unique identifier for the client performing the mutation.
+    """
+    clientMutationId: String
+
+    """
+    The user ids.
+    """
+    userIds: [ID!]
+
+    """
+    The id of the product.
+    """
+    productId: ID!
 }
 
 """

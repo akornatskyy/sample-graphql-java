@@ -25,4 +25,7 @@ public interface UserRepository {
 
   CompletableFuture<ProductPayload> deleteProduct(
       DeleteProductInput input);
+
+  CompletableFuture<ProductPayload> addUsersToProduct(
+      AddUsersToProductInput input);
 }

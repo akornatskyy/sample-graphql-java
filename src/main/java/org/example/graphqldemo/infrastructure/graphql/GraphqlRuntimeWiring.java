@@ -30,7 +30,8 @@ public class GraphqlRuntimeWiring {
         .type(TypeRuntimeWiring.newTypeWiring("Mutation")
                   .dataFetcher("createProduct", fetchers.createProduct())
                   .dataFetcher("updateProduct", fetchers.updateProduct())
-                  .dataFetcher("deleteProduct", fetchers.deleteProduct()))
+                  .dataFetcher("deleteProduct", fetchers.deleteProduct())
+                  .dataFetcher("addUsersToProduct", fetchers.addUsersToProduct()))
         .build();
   }
 }

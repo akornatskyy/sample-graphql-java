@@ -652,3 +652,40 @@ inputs:
           }
         }
       }
+  - title: add users to product
+    query: |-
+      mutation ($input: AddUsersToProductInput!) {
+        addUsersToProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            users {
+              id
+            }
+          }
+        }
+      }
+    variables:
+      input:
+        clientMutationId: dFHJMGDMuBF
+        userIds: ["1000", "1005"]
+        productId: "200"
+    result: |-
+      {
+        "data": {
+          "addUsersToProduct": {
+            "clientMutationId": "dFHJMGDMuBF",
+            "product": {
+              "id": "200",
+              "users": [
+                {
+                  "id": "1000"
+                },
+                {
+                  "id": "1005"
+                }
+              ]
+            }
+          }
+        }
+      }

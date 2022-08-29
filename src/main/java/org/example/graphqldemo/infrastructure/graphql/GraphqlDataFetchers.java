@@ -117,6 +117,14 @@ public class GraphqlDataFetchers {
         .deleteProduct(GraphqlTranslator.deleteProductInput(env));
   }
 
+  /**
+   * Add users to product data fetcher.
+   */
+  public DataFetcher<CompletableFuture<?>> addUsersToProduct() {
+    return env -> guard(env, () -> repository
+        .addUsersToProduct(GraphqlTranslator.addUsersToProductInput(env)));
+  }
+
   private static DataLoader<String, User> getUsersDataLoader(
       DataFetchingEnvironment env) {
     return env.getDataLoader(DataLoaderNames.USERS);
