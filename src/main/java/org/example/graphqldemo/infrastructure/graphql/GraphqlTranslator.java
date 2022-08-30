@@ -9,6 +9,7 @@ import org.example.graphqldemo.core.Context;
 import org.example.graphqldemo.core.CreateProductInput;
 import org.example.graphqldemo.core.DeleteProductInput;
 import org.example.graphqldemo.core.ListUserProductsSpec;
+import org.example.graphqldemo.core.RemoveUsersFromProductInput;
 import org.example.graphqldemo.core.UpdateProductInput;
 
 final class GraphqlTranslator {
@@ -71,6 +72,15 @@ final class GraphqlTranslator {
       DataFetchingEnvironment env) {
     AddUsersToProductInput input = MAPPER.convertValue(
         env.getArgument(INPUT), AddUsersToProductInput.class);
+    Context context = env.getLocalContext();
+    input.userId = context.userId;
+    return input;
+  }
+
+  static RemoveUsersFromProductInput removeUsersFromProductInput(
+      DataFetchingEnvironment env) {
+    RemoveUsersFromProductInput input = MAPPER.convertValue(
+        env.getArgument(INPUT), RemoveUsersFromProductInput.class);
     Context context = env.getLocalContext();
     input.userId = context.userId;
     return input;

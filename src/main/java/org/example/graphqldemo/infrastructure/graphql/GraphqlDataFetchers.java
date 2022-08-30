@@ -1,12 +1,9 @@
 package org.example.graphqldemo.infrastructure.graphql;
 
-import graphql.GraphQLError;
-import graphql.execution.DataFetcherResult;
 import graphql.relay.Connection;
 import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.validation.rules.ValidationRules;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -123,6 +120,15 @@ public class GraphqlDataFetchers {
   public DataFetcher<CompletableFuture<?>> addUsersToProduct() {
     return env -> guard(env, () -> repository
         .addUsersToProduct(GraphqlTranslator.addUsersToProductInput(env)));
+  }
+
+  /**
+   * Remove users to product data fetcher.
+   */
+  public DataFetcher<CompletableFuture<?>> removeUsersFromProduct() {
+    return env -> guard(env, () -> repository
+        .removeUsersFromProduct(GraphqlTranslator
+                                    .removeUsersFromProductInput(env)));
   }
 
   private static DataLoader<String, User> getUsersDataLoader(

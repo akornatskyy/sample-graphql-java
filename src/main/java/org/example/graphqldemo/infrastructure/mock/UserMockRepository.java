@@ -18,6 +18,7 @@ import org.example.graphqldemo.core.ListProductUsersSpec;
 import org.example.graphqldemo.core.ListUserProductsSpec;
 import org.example.graphqldemo.core.Product;
 import org.example.graphqldemo.core.ProductPayload;
+import org.example.graphqldemo.core.RemoveUsersFromProductInput;
 import org.example.graphqldemo.core.UpdateProductInput;
 import org.example.graphqldemo.core.User;
 import org.example.graphqldemo.core.UserRepository;
@@ -145,6 +146,21 @@ public class UserMockRepository implements UserRepository {
                 userId, (key) -> new ArrayList<>());
             if (!products.contains(product.id)) {
               products.add(product.id);
+            }
+          });
+          return new ProductPayload(input, product);
+        });
+  }
+
+  @Override
+  public CompletableFuture<ProductPayload> removeUsersFromProduct(
+      RemoveUsersFromProductInput input) {
+    return getUserProduct(input.userId, input.productId)
+        .thenApply((product) -> {
+          Stream.of(input.userIds).forEach(userId -> {
+            List<String> products = samples.userProducts.get(userId);
+            if (products != null) {
+              products.remove(product.id);
             }
           });
           return new ProductPayload(input, product);

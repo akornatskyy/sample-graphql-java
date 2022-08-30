@@ -31,7 +31,10 @@ public class GraphqlRuntimeWiring {
                   .dataFetcher("createProduct", fetchers.createProduct())
                   .dataFetcher("updateProduct", fetchers.updateProduct())
                   .dataFetcher("deleteProduct", fetchers.deleteProduct())
-                  .dataFetcher("addUsersToProduct", fetchers.addUsersToProduct()))
+                  .dataFetcher("addUsersToProduct",
+                               fetchers.addUsersToProduct())
+                  .dataFetcher("removeUsersFromProduct",
+                               fetchers.removeUsersFromProduct()))
         .build();
   }
 }

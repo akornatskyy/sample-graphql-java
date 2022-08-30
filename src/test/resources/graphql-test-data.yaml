@@ -689,3 +689,37 @@ inputs:
           }
         }
       }
+  - title: remove users from product
+    query: |-
+      mutation ($input: RemoveUsersFromProductInput!) {
+        removeUsersFromProduct(input: $input) {
+          clientMutationId
+          product {
+            id
+            users {
+              id
+            }
+          }
+        }
+      }
+    variables:
+      input:
+        clientMutationId: dFHJMGDMuBF
+        userIds: [ "1005" ]
+        productId: "200"
+    result: |-
+      {
+        "data": {
+          "removeUsersFromProduct": {
+            "clientMutationId": "dFHJMGDMuBF",
+            "product": {
+              "id": "200",
+              "users": [
+                {
+                  "id": "1000"
+                }
+              ]
+            }
+          }
+        }
+      }
