@@ -94,16 +94,16 @@ public class GraphqlDataFetchers {
    * Create product data fetcher.
    */
   public DataFetcher<CompletableFuture<?>> createProduct() {
-    return env -> guard(env, () -> repository
-        .createProduct(GraphqlTranslator.createProductInput(env)));
+    return env -> repository
+        .createProduct(GraphqlTranslator.createProductInput(env));
   }
 
   /**
    * Update product data fetcher.
    */
   public DataFetcher<CompletableFuture<?>> updateProduct() {
-    return env -> guard(env, () -> repository
-        .updateProduct(GraphqlTranslator.updateProductInput(env)));
+    return env -> repository
+        .updateProduct(GraphqlTranslator.updateProductInput(env));
   }
 
   /**
@@ -118,26 +118,21 @@ public class GraphqlDataFetchers {
    * Add users to product data fetcher.
    */
   public DataFetcher<CompletableFuture<?>> addUsersToProduct() {
-    return env -> guard(env, () -> repository
-        .addUsersToProduct(GraphqlTranslator.addUsersToProductInput(env)));
+    return env -> repository
+        .addUsersToProduct(GraphqlTranslator.addUsersToProductInput(env));
   }
 
   /**
-   * Remove users to product data fetcher.
+   * Remove users from product data fetcher.
    */
   public DataFetcher<CompletableFuture<?>> removeUsersFromProduct() {
-    return env -> guard(env, () -> repository
+    return env -> repository
         .removeUsersFromProduct(GraphqlTranslator
-                                    .removeUsersFromProductInput(env)));
+                                    .removeUsersFromProductInput(env));
   }
 
   private static DataLoader<String, User> getUsersDataLoader(
       DataFetchingEnvironment env) {
     return env.getDataLoader(DataLoaderNames.USERS);
-  }
-
-  private static <T> CompletableFuture<?> guard(
-      DataFetchingEnvironment env, Supplier<CompletableFuture<T>> supplier) {
-    return supplier.get();
   }
 }
