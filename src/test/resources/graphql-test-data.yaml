@@ -437,7 +437,7 @@ inputs:
         }
       }
     variables:
-      name: 2
+      name: "2"
     result: |-
       {
         "data": {
