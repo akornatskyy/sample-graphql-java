@@ -14,11 +14,11 @@
     <maven.compiler.target>8</maven.compiler.target>
 
     <checkstyle.version>9.3</checkstyle.version>
-    <graphql.validation.version>18.1</graphql.validation.version>
-    <graphql.version>19.2</graphql.version>
-    <jackson.version>2.13.4</jackson.version>
+    <graphql.validation.version>19.1</graphql.validation.version>
+    <graphql.version>20.0</graphql.version>
+    <jackson.version>2.14.1</jackson.version>
     <maven.checkstyle.plugin>3.2.0</maven.checkstyle.plugin>
-    <spring.boot.version>2.7.3</spring.boot.version>
+    <spring.boot.version>2.7.5</spring.boot.version>
     <testng.version>7.5</testng.version>
   </properties>
 
