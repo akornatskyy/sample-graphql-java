@@ -10,16 +10,19 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
 
-    <checkstyle.version>9.3</checkstyle.version>
     <graphql.validation.version>19.1</graphql.validation.version>
     <graphql.version>20.0</graphql.version>
-    <jackson.version>2.14.1</jackson.version>
-    <maven.checkstyle.plugin>3.2.0</maven.checkstyle.plugin>
-    <spring.boot.version>2.7.5</spring.boot.version>
-    <testng.version>7.5</testng.version>
+    <jackson.version>2.14.2</jackson.version>
+    <slf4j.version>2.0.7</slf4j.version>
+    <spring.boot.version>3.0.5</spring.boot.version>
+
+    <testng.version>7.7.1</testng.version>
+
+    <checkstyle.version>10.3.4</checkstyle.version>
+    <maven.checkstyle.plugin>3.2.1</maven.checkstyle.plugin>
   </properties>
 
   <dependencies>
@@ -27,6 +30,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webflux</artifactId>
       <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>com.graphql-java</groupId>
