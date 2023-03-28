@@ -41,7 +41,7 @@ jobs:
           languages: java
       - uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 19
           distribution: 'adopt'
           cache: maven
       - run: mvn -T1C --batch-mode compile
