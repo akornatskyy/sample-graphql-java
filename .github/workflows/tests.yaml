@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: github/codeql-action/init@v2
+      - uses: github/codeql-action/init@v3
         with:
           languages: java
       - uses: actions/setup-java@v3
@@ -45,4 +45,4 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - run: mvn -T1C --batch-mode compile
-      - uses: github/codeql-action/analyze@v2
+      - uses: github/codeql-action/analyze@v3
