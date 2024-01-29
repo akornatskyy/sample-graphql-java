@@ -21,7 +21,7 @@
 
     <testng.version>7.9.0</testng.version>
 
-    <checkstyle.version>10.12.7</checkstyle.version>
+    <checkstyle.version>10.13.0</checkstyle.version>
     <maven.checkstyle.plugin>3.3.1</maven.checkstyle.plugin>
   </properties>
 
