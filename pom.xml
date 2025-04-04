@@ -13,16 +13,16 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
 
-    <graphql.validation.version>21.0</graphql.validation.version>
-    <graphql.version>21.5</graphql.version>
-    <jackson.version>2.18.0</jackson.version>
+    <graphql.validation.version>22.0</graphql.validation.version>
+    <graphql.version>22.3</graphql.version>
+    <jackson.version>2.18.3</jackson.version>
     <slf4j.version>2.1.0-alpha1</slf4j.version>
-    <spring.boot.version>3.3.4</spring.boot.version>
+    <spring.boot.version>3.4.4</spring.boot.version>
 
-    <testng.version>7.10.2</testng.version>
+    <testng.version>7.11.0</testng.version>
 
-    <checkstyle.version>10.18.2</checkstyle.version>
-    <maven.checkstyle.plugin>3.5.0</maven.checkstyle.plugin>
+    <checkstyle.version>10.23.0</checkstyle.version>
+    <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
   </properties>
 
   <dependencies>
