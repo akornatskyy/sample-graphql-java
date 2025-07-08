@@ -13,7 +13,7 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
 
-    <graphql.validation.version>22.0</graphql.validation.version>
+    <graphql.validation.version>24.0</graphql.validation.version>
     <graphql.version>22.3</graphql.version>
     <jackson.version>2.18.3</jackson.version>
     <slf4j.version>2.1.0-alpha1</slf4j.version>
